@@ -1,0 +1,10 @@
+{
+  "name": "lon-store-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/lon-store-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["lon-store"],
+  "// targets": "to see all targets run: nx show project lon-store-e2e --web",
+  "targets": {}
+}
