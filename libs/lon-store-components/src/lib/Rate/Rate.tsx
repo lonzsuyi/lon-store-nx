@@ -10,8 +10,8 @@ export interface RateProps {
   interactive?: boolean; // Whether the rating is interactive (default: `false`).
   onChange?: (value: number) => void; // Callback when the rating value changes.
   size?: number; // The size of the stars (default: 24px).
-  activeColor?: string; // The color of filled stars (default: `#FBBF24` - yellow-400).
-  inactiveColor?: string; // The color of empty stars (default: `#D1D5DB` - gray-400).
+  activeColor?: string; // The color of filled stars (default: `#FABE3A` - yellow-700).
+  inactiveColor?: string; // The color of empty stars (default: `#D1D5DB` - gray-200).
 }
 
 /**
@@ -60,6 +60,7 @@ export const Rate: React.FC<RateProps> = ({
           />
         );
       })}
+      <span className="text-gray-400 text-sm font-medium ml-1">({value.toFixed(1)})</span>
     </div>
   );
 };
