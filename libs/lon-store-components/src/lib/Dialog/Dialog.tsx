@@ -55,13 +55,6 @@ export const Dialog: React.FC<DialogProps> = ({
         }`}
       >
         {showCloseButton && (<Icon className="absolute top-6 right-4 text-gray-400" name="CircleX" size={18} aria-label="Close dialog" onClick={onClose} />
-          // <button
-          //   className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-          //   onClick={onClose}
-          //   
-          // >
-          //   ✕
-          // </button>
         )}
         {title && <h2 className="pt-1 pb-4 text-lg text-black font-semibold mb-4 border-b border-b-gray-200">{title}</h2>}
         <div>{children}</div>
