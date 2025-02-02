@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent, waitFor } from '@storybook/testing-library';
 import { expect } from '@storybook/jest';
-import { useState } from 'react';
 import { Dialog } from './Dialog';
+import { Button } from '../Button/Button';
 
 /**
  * Storybook metadata for the Dialog component.
@@ -14,12 +15,6 @@ const meta: Meta<typeof Dialog> = {
   argTypes: {
     isOpen: { control: 'boolean', description: 'Whether the dialog is open' },
     title: { control: 'text', description: 'Dialog title' },
-    size: {
-      control: 'radio',
-      options: ['sm', 'md', 'lg'],
-      description: 'Dialog size',
-    },
-    showCloseButton: { control: 'boolean', description: 'Show close button' },
     position: {
       control: 'radio',
       options: ['top', 'center', 'bottom'],
@@ -32,162 +27,94 @@ export default meta;
 type Story = StoryObj<typeof Dialog>;
 
 /**
- * Default dialog example.
+ * Interactive Dynamic Dialog Example.
  */
-export const Default: Story = {
-  args: {
-    isOpen: true,
-    title: 'Default Dialog',
-    children: <p>This is a simple dialog in the center.</p>,
-    position: 'center',
-  },
-};
-
-/**
- * Dialog positioned at the top.
- */
-export const TopDialog: Story = {
-  args: {
-    isOpen: true,
-    title: 'Top Dialog',
-    children: <p>This dialog appears at the top.</p>,
-    position: 'top',
-  },
-};
-
-/**
- * Dialog positioned at the bottom.
- */
-export const BottomDialog: Story = {
-  args: {
-    isOpen: true,
-    title: 'Bottom Dialog',
-    children: <p>This dialog appears at the bottom.</p>,
-    position: 'bottom',
-  },
-};
-
-/**
- * Interactive dialog (click to open/close).
- */
-export const Interactive: Story = {
-  args: {
-    title: 'Interactive Dialog',
-    children: <p>Click outside or press Escape to close.</p>,
-    position: 'center',
-  },
+export const InteractiveDynamicDialog: Story = {
   render: (args) => {
-    const InteractiveDialog = () => {
+    const DynamicDialog = () => {
       const [isOpen, setIsOpen] = useState(false);
+      const [variant, setVariant] = useState<'blank' | 'confirm'>('blank');
+      const [confirmText, setConfirmText] = useState('');
 
       return (
-        <div>
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-            onClick={() => setIsOpen(true)}
+        <div className="flex flex-col items-center gap-4">
+          {/* Toggle Dialog Type */}
+          <div className="flex gap-2">
+            <Button variant="blue" onClick={() => {
+              setVariant('blank');
+              setIsOpen(true);
+            }}>
+              Open Blank Dialog
+            </Button>
+            <Button variant="green" onClick={() => {
+              setVariant('confirm');
+              setConfirmText('Your action has been confirmed.');
+              setIsOpen(true);
+            }}>
+              Open Confirm Dialog
+            </Button>
+          </div>
+
+          {/* Dialog Component */}
+          <Dialog
+            {...args}
+            isOpen={isOpen}
+            variant={variant}
+            title={variant === 'blank' ? 'Regular Dialog' : 'Confirmation'}
+            confirmText={confirmText}
+            confirmBtnText="OK"
+            onClose={() => setIsOpen(false)}
+            onConfirm={() => {
+              console.log('Confirmed!');
+              setIsOpen(false);
+            }}
           >
-            Open Dialog
-          </button>
-          <Dialog {...args} isOpen={isOpen} onClose={() => setIsOpen(false)} />
+            {variant === 'blank' && <p>This is a regular dialog.</p>}
+          </Dialog>
         </div>
       );
     };
 
-    return <InteractiveDialog />;
+    return <DynamicDialog />;
   },
+
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Open the dialog
-    const openButton = canvas.getByText('Open Dialog');
-    await userEvent.click(openButton);
+    // Click "Open Blank Dialog"
+    const openBlankButton = canvas.getByText(/open blank dialog/i);
+    await userEvent.click(openBlankButton);
 
-    // Wait for the dialog to appear
+    // Ensure the blank dialog appears
     await waitFor(() => {
-      expect(canvas.getByText('Interactive Dialog')).toBeInTheDocument();
+      expect(canvas.getByText('Regular Dialog')).toBeInTheDocument();
     });
 
     // Close the dialog
     const closeButton = canvas.getByLabelText('Close dialog');
     await userEvent.click(closeButton);
 
-    // Wait for the dialog to disappear
+    // Ensure the dialog disappears
     await waitFor(() => {
-      expect(canvas.queryByText('Interactive Dialog')).toBeNull();
-    });
-  },
-};
-
-/**
- * comfirm dialog (click to open/close).
- */
-export const ConfirmDialog: Story = {
-  args: {
-    isOpen: true,
-    title: 'Order Confirmation',
-    position: 'top',
-    variant: 'confirm',
-    confirmText: 'Thank you for your order!',
-    confirmBtnText: 'Close',
-  },
-};
-
-export const InteractiveConfirm: Story = {
-  render: (args) => {
-    const InteractiveDialog = () => {
-      const [isOpen, setIsOpen] = useState(false);
-
-      return (
-        <div>
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-            onClick={() => setIsOpen(true)}
-          >
-            Open Confirm Dialog
-          </button>
-          <Dialog
-            {...args}
-            variant="confirm"
-            title="Order Confirmation"
-            position="top"
-            confirmText="Thank you for your order!"
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-            onConfirm={() => {
-              console.log('Confirmed!');
-              setIsOpen(false);
-            }}
-          />
-        </div>
-      );
-    };
-
-    return <InteractiveDialog />;
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // ✅ Open the confirm dialog
-    const openButton = await canvas.findByText(/open confirm dialog/i);
-    await userEvent.click(openButton);
-
-    // ✅ Wait for the dialog container to appear first
-    const modal = await canvas.findByRole('dialog');
-
-    // ✅ Then find the "Confirmation Dialog" inside the modal
-    await waitFor(() => {
-      expect(
-        within(modal).getByText(/order confirmation/i)
-      ).toBeInTheDocument();
+      expect(canvas.queryByText('Regular Dialog')).toBeNull();
     });
 
-    // ✅ Click Confirm button inside the modal
-    const confirmButton = await within(modal).findByText(/close/i);
+    // Click "Open Confirm Dialog"
+    const openConfirmButton = canvas.getByText(/open confirm dialog/i);
+    await userEvent.click(openConfirmButton);
+
+    // Ensure the confirmation dialog appears
+    await waitFor(() => {
+      expect(canvas.getByText('Your action has been confirmed.')).toBeInTheDocument();
+    });
+
+    // Click "OK" in the confirm dialog
+    const confirmButton = canvas.getByText('OK');
     await userEvent.click(confirmButton);
 
-    // ✅ Ensure the modal disappears after clicking Confirm
+    // Ensure the confirm dialog disappears
     await waitFor(() => {
-      expect(canvas.queryByRole('dialog')).toBeNull();
+      expect(canvas.queryByText('Your action has been confirmed.')).toBeNull();
     });
   },
 };

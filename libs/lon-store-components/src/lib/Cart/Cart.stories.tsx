@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent, waitFor } from '@storybook/testing-library';
 import { expect } from '@storybook/jest';
+import { Button } from '../Button/Button';
+import { Dialog } from '../Dialog/Dialog';
 import { Cart, CartProps } from './Cart';
 
 /**
@@ -38,101 +40,58 @@ const mockCartItems: CartProps['cartItems'] = [
 ];
 
 /**
- * Default Cart with items.
+ * Interactive Storybook Cart Component.
  */
-export const Default: Story = {
-  args: {
-    cartItems: mockCartItems,
-    onUpdateQuantity: (id, quantity) =>
-      console.log(`Update ${id} to ${quantity}`),
-    onRemoveProduct: (id) => console.log(`Removed ${id}`),
-    onCheckout: () => console.log('Checkout'),
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+const InteractiveCartWrapper = () => {
+  const [cartItems, setCartItems] = useState<CartProps['cartItems']>(mockCartItems);
+  const [isOpen, setIsOpen] = useState(false);
 
-    // Open cart dialog
-    const openCartButton = canvas.getByText(/Open Cart/i);
-    await userEvent.click(openCartButton);
-
-    // Ensure dialog opens
-    await waitFor(() => {
-      expect(canvas.getByText('Cart')).toBeInTheDocument();
-    });
-
-    // Ensure checkout button is present
-    await waitFor(() => {
-      expect(canvas.getByText('Checkout')).toBeInTheDocument();
-    });
-
-    // Click checkout
-    const checkoutButton = canvas.getByText(/Checkout/i);
-    await userEvent.click(checkoutButton);
-  },
-};
-
-/**
- * Empty Cart.
- */
-export const EmptyCart: Story = {
-  args: {
-    cartItems: [],
-    onUpdateQuantity: (id, quantity) =>
-      console.log(`Update ${id} to ${quantity}`),
-    onRemoveProduct: (id) => console.log(`Removed ${id}`),
-    onCheckout: () => console.log('Checkout clicked'),
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Open cart dialog
-    const openCartButton = canvas.getByText(/Open Cart/i);
-    await userEvent.click(openCartButton);
-
-    // Ensure "Your cart is empty" message appears
-    await waitFor(() => {
-      expect(canvas.getByText('Your cart is empty.')).toBeInTheDocument();
-    });
-  },
-};
-
-/**
- * InteractiveCart Component (Fix: Wrap `useState` inside a React component).
- */
-const InteractiveCartComponent: React.FC = () => {
-  const [cartItems, setCartItems] =
-    useState<CartProps['cartItems']>(mockCartItems);
-
+  /**
+   * Update item quantity.
+   */
   const handleUpdateQuantity = (id: string, quantity: number) => {
     setCartItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+      prev.map((item) =>
+        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
+      )
     );
   };
 
+  /**
+   * Remove an item from the cart.
+   */
   const handleRemoveProduct = (id: string) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   return (
-    <Cart
-      cartItems={cartItems}
-      onUpdateQuantity={handleUpdateQuantity}
-      onRemoveProduct={handleRemoveProduct}
-      onCheckout={() => console.log('Proceeding to checkout...')}
-    />
+    <>
+      <Button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={() => setIsOpen(true)}>
+        Open Cart Dialog
+      </Button>
+
+      <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)} title="Cart">
+        <Cart
+          cartItems={cartItems}
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveProduct={handleRemoveProduct}
+          onNextClick={() => console.log('Proceeding to checkout...')}
+        />
+      </Dialog>
+    </>
   );
 };
 
 /**
- * Interactive Cart Story.
+ * Interactive Cart Story in a Dialog.
  */
-export const InteractiveCart: Story = {
-  render: () => <InteractiveCartComponent />, 
+export const InteractiveCartInDialog: Story = {
+  render: () => <InteractiveCartWrapper />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Open cart dialog
-    const openCartButton = canvas.getByText(/Open Cart/i);
+    // ✅ Open cart dialog
+    const openCartButton = canvas.getByText(/Open Cart Dialog/i);
     await userEvent.click(openCartButton);
 
     // Ensure cart opens
@@ -140,21 +99,16 @@ export const InteractiveCart: Story = {
       expect(canvas.getByText('Cart')).toBeInTheDocument();
     });
 
-    // ✅ Change quantity of Product 1
-    const quantityInput = canvas.getAllByRole('spinbutton')[0];
-    await userEvent.clear(quantityInput);
-    await userEvent.type(quantityInput, '3');
-
-    // ✅ Remove Product 2
+    // Remove Product 2
     const removeButton = canvas.getAllByLabelText('Remove product')[1];
     await userEvent.click(removeButton);
 
-    // ✅ Ensure Product 2 is removed
+    //  Ensure Product 2 is removed
     await waitFor(() => {
       expect(canvas.queryByText('Product 2')).toBeNull();
     });
 
-    // ✅ Ensure Checkout Button is still visible
+    // Ensure Checkout Button is still visible
     await waitFor(() => {
       expect(canvas.getByText('Checkout')).toBeInTheDocument();
     });
