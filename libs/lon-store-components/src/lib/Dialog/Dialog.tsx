@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Icon } from '../Icon/Icon';
+import { Button } from '../Button/Button';
 
 /**
  * Props for the Dialog component.
@@ -12,6 +13,10 @@ export interface DialogProps {
   size?: 'sm' | 'md' | 'lg'; // Width of the dialog (default: `max-w-md`).
   showCloseButton?: boolean; // Show close button (default: `true`).
   position?: 'top' | 'center' | 'bottom'; // Position of the dialog (`top`, `center`, `bottom`).
+  variant?: 'blank' | 'confirm'; // Dialog variant (`blank` by default).
+  confirmText?: string; // Custom text for the confirm content.
+  confirmBtnText?: string; // Custom text for the confirm button.
+  onConfirm?: () => void; // Callback when confirm button is clicked.
 }
 
 /**
@@ -25,6 +30,10 @@ export const Dialog: React.FC<DialogProps> = ({
   size = 'md',
   showCloseButton = true,
   position = 'center',
+  variant = 'blank',
+  confirmText = '',
+  confirmBtnText = 'Close',
+  onConfirm,
 }) => {
   useEffect(() => {
     if (!isOpen) return;
@@ -48,7 +57,11 @@ export const Dialog: React.FC<DialogProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+    <div
+      className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50"
+      role="dialog"
+      aria-modal="true"
+    >
       <div
         className={`absolute ${
           positionClasses[position]
@@ -70,7 +83,21 @@ export const Dialog: React.FC<DialogProps> = ({
             {title}
           </h2>
         )}
-        <div>{children}</div>
+        {variant === 'blank' && <div>{children}</div>}
+        {variant === 'confirm' && (
+          <div>
+            <p className="text-black text-2xl text-center">{confirmText}</p>
+            <div className="mt-4">
+              <Button
+                className="w-full"
+                variant="black"
+                onClick={onConfirm || onClose}
+              >
+                {confirmBtnText}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

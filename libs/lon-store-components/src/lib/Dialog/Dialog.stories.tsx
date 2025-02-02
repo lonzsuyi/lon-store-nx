@@ -14,9 +14,17 @@ const meta: Meta<typeof Dialog> = {
   argTypes: {
     isOpen: { control: 'boolean', description: 'Whether the dialog is open' },
     title: { control: 'text', description: 'Dialog title' },
-    size: { control: 'radio', options: ['sm', 'md', 'lg'], description: 'Dialog size' },
+    size: {
+      control: 'radio',
+      options: ['sm', 'md', 'lg'],
+      description: 'Dialog size',
+    },
     showCloseButton: { control: 'boolean', description: 'Show close button' },
-    position: { control: 'radio', options: ['top', 'center', 'bottom'], description: 'Dialog position' },
+    position: {
+      control: 'radio',
+      options: ['top', 'center', 'bottom'],
+      description: 'Dialog position',
+    },
   },
 };
 
@@ -74,7 +82,10 @@ export const Interactive: Story = {
 
       return (
         <div>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded" onClick={() => setIsOpen(true)}>
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+            onClick={() => setIsOpen(true)}
+          >
             Open Dialog
           </button>
           <Dialog {...args} isOpen={isOpen} onClose={() => setIsOpen(false)} />
@@ -103,6 +114,80 @@ export const Interactive: Story = {
     // Wait for the dialog to disappear
     await waitFor(() => {
       expect(canvas.queryByText('Interactive Dialog')).toBeNull();
+    });
+  },
+};
+
+/**
+ * comfirm dialog (click to open/close).
+ */
+export const ConfirmDialog: Story = {
+  args: {
+    isOpen: true,
+    title: 'Order Confirmation',
+    position: 'top',
+    variant: 'confirm',
+    confirmText: 'Thank you for your order!',
+    confirmBtnText: 'Close',
+  },
+};
+
+export const InteractiveConfirm: Story = {
+  render: (args) => {
+    const InteractiveDialog = () => {
+      const [isOpen, setIsOpen] = useState(false);
+
+      return (
+        <div>
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+            onClick={() => setIsOpen(true)}
+          >
+            Open Confirm Dialog
+          </button>
+          <Dialog
+            {...args}
+            variant="confirm"
+            title="Order Confirmation"
+            position="top"
+            confirmText="Thank you for your order!"
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            onConfirm={() => {
+              console.log('Confirmed!');
+              setIsOpen(false);
+            }}
+          />
+        </div>
+      );
+    };
+
+    return <InteractiveDialog />;
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // ✅ Open the confirm dialog
+    const openButton = await canvas.findByText(/open confirm dialog/i);
+    await userEvent.click(openButton);
+
+    // ✅ Wait for the dialog container to appear first
+    const modal = await canvas.findByRole('dialog');
+
+    // ✅ Then find the "Confirmation Dialog" inside the modal
+    await waitFor(() => {
+      expect(
+        within(modal).getByText(/order confirmation/i)
+      ).toBeInTheDocument();
+    });
+
+    // ✅ Click Confirm button inside the modal
+    const confirmButton = await within(modal).findByText(/close/i);
+    await userEvent.click(confirmButton);
+
+    // ✅ Ensure the modal disappears after clicking Confirm
+    await waitFor(() => {
+      expect(canvas.queryByRole('dialog')).toBeNull();
     });
   },
 };
