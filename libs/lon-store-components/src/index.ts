@@ -1,3 +1,4 @@
+export * from './lib/ProductCardList/ProductCardList';
 export * from './lib/Icon/Icon';
 export * from './lib/Cart/Cart';
 export * from './lib/ProductCard/ProductCard';
