@@ -52,7 +52,7 @@ export const Rate: React.FC<RateProps> = ({
             size={size}
             fill={isFilled ? activeColor : inactiveColor}
             strokeWidth={0}
-            className="cursor-pointer"
+            className={interactive ? 'cursor-pointer' : 'cursor-auto'}
             onMouseEnter={() => interactive && setHovered(index + 1)}
             onMouseLeave={() => interactive && setHovered(null)}
             onClick={() => handleClick(index)}
@@ -60,7 +60,9 @@ export const Rate: React.FC<RateProps> = ({
           />
         );
       })}
-      <span className="text-gray-400 text-sm font-medium ml-1">({value.toFixed(1)})</span>
+      <span className="text-gray-400 text-sm font-medium ml-1">
+        ({value.toFixed(1)})
+      </span>
     </div>
   );
 };

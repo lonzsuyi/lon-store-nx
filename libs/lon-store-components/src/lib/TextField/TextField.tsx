@@ -6,7 +6,7 @@ export interface TextFieldProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   variant?: 'default';
-  fieldSize?: 'md';
+  fieldSize?: 'sm' | 'md';
   fieldType?:
     | 'email'
     | 'bankCard'
@@ -15,6 +15,7 @@ export interface TextFieldProps
     | 'number'
     | 'text';
   isRequired?: boolean; // New prop for required validation
+  hideenErrMsg?: boolean;
   error?: string;
 }
 
@@ -39,6 +40,7 @@ export const TextField: React.FC<TextFieldProps> = ({
   label,
   variant = 'default',
   fieldSize = 'md',
+  hideenErrMsg = false,
   error,
   fieldType = 'text',
   isRequired = false,
@@ -56,11 +58,12 @@ export const TextField: React.FC<TextFieldProps> = ({
 
   // Base styles for input
   const baseStyles =
-    'rounded-xl border transition focus:ring-2 outline-none w-full';
+    'rounded-xl shadow-md border transition focus:ring-2 outline-none w-full ';
 
   // Size styles
   const sizeStyles = {
     md: 'px-3 h-[42px] text-sm',
+    sm: 'px-3 h-[30px] text-sm',
   };
 
   // Variant styles
@@ -104,9 +107,7 @@ export const TextField: React.FC<TextFieldProps> = ({
 
   return (
     <div className="flex flex-col gap-1">
-      {label && (
-        <label className="text-sm text-gray-600">{label}</label>
-      )}
+      {label && <label className="text-sm text-gray-600">{label}</label>}
       <input
         className={twMerge(
           baseStyles,
@@ -122,7 +123,7 @@ export const TextField: React.FC<TextFieldProps> = ({
         onBlur={handleBlur}
         {...props}
       />
-      {touched && (error || handleValidation(value)) && (
+      {!hideenErrMsg && touched && (error || handleValidation(value)) && (
         <p className="text-xs text-red-500" data-testid="error-message">
           {error || handleValidation(value)}
         </p>
