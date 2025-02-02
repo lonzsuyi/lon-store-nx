@@ -1,21 +1,60 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import express, { Request, Response, NextFunction } from 'express';
+import http from 'http';
+import cors from 'cors';
+import { typeDefs, resolvers } from '../src/schema';
 
-import express from 'express';
-import * as path from 'path';
+interface MyContext {
+  token?: string;
+}
 
-const app = express();
+async function startServer() {
+  const app = express();
+  const httpServer = http.createServer(app);
 
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+  // Apollo Server setup
+  const server = new ApolloServer<MyContext>({
+    typeDefs,
+    resolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    formatError: (error) => {
+      console.error('GraphQL Error:', error);
+      return {
+        message: error.message,
+        path: error.path,
+        locations: error.locations,
+        extensions: error.extensions,
+      };
+    },
+  });
 
-app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to lon-store-middleware!' });
+  await server.start();
+
+  app.use(
+    '/graphql',
+    cors<cors.CorsRequest>(),
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req }) => ({ token: req.headers.token }),
+    })
+  );
+
+  // Express global error-handling middleware
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error('Express Error:', err.stack || err.message);
+    res.status(500).json({ error: 'Internal Server Error', message: err.message });
+  });
+
+  await new Promise<void>((resolve) =>
+    httpServer.listen({ port: 4000 }, resolve)
+  );
+
+  console.log(`Server ready at http://localhost:4000/graphql`);
+}
+
+// Start server and catch any initialization errors
+startServer().catch((err) => {
+  console.error('Server Startup Error:', err);
 });
-
-const port = process.env.PORT || 3333;
-const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
-});
-server.on('error', console.error);
