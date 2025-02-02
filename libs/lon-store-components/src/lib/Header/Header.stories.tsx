@@ -7,7 +7,7 @@ import { Header } from './Header';
  * Storybook metadata for the Header component.
  */
 const meta: Meta<typeof Header> = {
-  title: 'Pages/Header',
+  title: 'Layout/Header',
   component: Header,
   tags: ['autodocs'],
   argTypes: {

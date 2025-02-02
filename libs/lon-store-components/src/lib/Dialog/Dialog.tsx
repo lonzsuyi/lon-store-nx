@@ -58,7 +58,7 @@ export const Dialog: React.FC<DialogProps> = ({
       >
         {showCloseButton && (
           <Icon
-            className="absolute top-6 right-4 text-gray-400"
+            className="absolute top-6 right-4 text-gray-400 cursor-pointer"
             name="CircleX"
             size={18}
             aria-label="Close dialog"

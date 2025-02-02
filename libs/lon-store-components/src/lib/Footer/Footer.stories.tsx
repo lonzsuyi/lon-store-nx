@@ -7,7 +7,7 @@ import { Footer } from './Footer';
  * Storybook metadata for the Footer component.
  */
 const meta: Meta<typeof Footer> = {
-  title: 'Pages/Footer',
+  title: 'Layout/Footer',
   component: Footer,
   tags: ['autodocs'],
   argTypes: {

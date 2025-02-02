@@ -66,8 +66,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             className="w-full h-[305px] object-cover rounded-md"
           />
 
-          {/* Title */}
-          <h3 className="mt-2 text-sm font-medium text-gray-400 line-clamp-3">{title}</h3>
+          {/* Title: over 3 line clamp */}
+          <h3 className="mt-2 text-sm font-medium text-gray-400 line-clamp-3">
+            {title}
+          </h3>
 
           {/* Price & Rating */}
           <div className="flex justify-between items-center mt-2 mb-2">
@@ -89,13 +91,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Picture
             src={imageSrc}
             alt={title}
-            className="w-[96px] h-[87px] object-cover rounded-md"
+            className="w-[96px] h-[87px] px-2 object-cover rounded-md"
           />
           {/* Right: Product Info */}
           <div className="h-full flex-1 flex flex-col justify-between pl-2 py-1">
             <div className="flex justify-between items-center">
-              {/* Title */}
-              <h3 className="text-sm font-medium text-gray-400 line-clamp-3">{title}</h3>
+              {/* Title: over 3 line clamp */}
+              <h3 className="text-sm font-medium text-gray-400 line-clamp-3">
+                {title}
+              </h3>
 
               {/* Remove Button */}
               <Icon
@@ -121,7 +125,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 hideenErrMsg={true}
                 value={quantity}
                 onChange={(e) =>
-                  onQuantityChange?.(parseInt(e.target.value, 10))
+                  onQuantityChange?.(parseInt(e.target.value, 10) || 1)
                 }
               />
             </div>

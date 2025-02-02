@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent } from '@storybook/testing-library';
 import { expect } from '@storybook/jest';
@@ -50,14 +51,38 @@ export const Regular: Story = {
 };
 
 /**
+ * Component for Storybook to manage quantity state.
+ */
+const MiniProductCardStory: React.FC = () => {
+  const [quantity, setQuantity] = useState(1);
+
+  return (
+    <ProductCard
+      variant="mini"
+      imageSrc="https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg"
+      title="Solid Gold Petite Micropave"
+      price={15.0}
+      quantity={quantity}
+      onQuantityChange={(value) => {
+        setQuantity(value);
+        console.log(`Quantity updated: ${value}`);
+      }}
+    />
+  );
+};
+
+/**
  * Mini Product Card.
  */
 export const Mini: Story = {
+  render: () => <MiniProductCardStory />,
   args: {
     variant: 'mini',
     imageSrc: 'https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg',
     title: 'Solid Gold Petite Micropave',
-    price: 15.0
+    price: 15.0,
+    quantity: 1,
+    onQuantityChange: (value) => console.log(`Quantity updated: ${value}`),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
