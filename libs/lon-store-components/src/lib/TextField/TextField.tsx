@@ -117,7 +117,9 @@ export const TextField: React.FC<TextFieldProps> = ({
             : variantStyles[variant],
           className
         )}
-        type={getInputType(fieldType)} // Dynamically set `type` based on `fieldType`
+        type={getInputType(fieldType)} // Dynamically set `type` based on `fieldType
+        role={fieldType === 'number' ? 'spinbutton' : undefined}
+        aria-label={props['aria-label'] || label || 'Input field'}
         value={value}
         onChange={handleChange}
         onBlur={handleBlur}

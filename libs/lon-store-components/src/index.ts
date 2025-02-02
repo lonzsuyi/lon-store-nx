@@ -1,4 +1,6 @@
 export * from './lib/Icon/Icon';
+export * from './lib/Cart/Cart';
+export * from './lib/ProductCard/ProductCard';
 export * from './lib/Footer/Footer';
 export * from './lib/Header/Header';
 export * from './lib/Picture/Picture';
