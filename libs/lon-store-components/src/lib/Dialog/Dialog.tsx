@@ -50,13 +50,26 @@ export const Dialog: React.FC<DialogProps> = ({
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
       <div
-        className={`absolute ${positionClasses[position]} bg-white rounded-lg shadow-lg px-3 py-4 transition-transform transform scale-100 w-full max-w-md ${
+        className={`absolute ${
+          positionClasses[position]
+        } bg-white rounded-lg shadow-lg px-3 py-4 transition-transform transform scale-100 w-full max-w-md ${
           size === 'sm' ? 'max-w-sm' : size === 'lg' ? 'max-w-3xl' : 'max-w-md'
         }`}
       >
-        {showCloseButton && (<Icon className="absolute top-6 right-4 text-gray-400" name="CircleX" size={18} aria-label="Close dialog" onClick={onClose} />
+        {showCloseButton && (
+          <Icon
+            className="absolute top-6 right-4 text-gray-400"
+            name="CircleX"
+            size={18}
+            aria-label="Close dialog"
+            onClick={onClose}
+          />
         )}
-        {title && <h2 className="pt-1 pb-4 text-lg text-black font-semibold mb-4 border-b border-b-gray-200">{title}</h2>}
+        {title && (
+          <h2 className="pt-1 pb-4 text-lg text-black font-semibold mb-4 border-b border-b-gray-200">
+            {title}
+          </h2>
+        )}
         <div>{children}</div>
       </div>
     </div>

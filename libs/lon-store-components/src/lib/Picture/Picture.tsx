@@ -16,6 +16,8 @@ export interface PictureProps extends React.HTMLAttributes<HTMLPictureElement> {
    * - `eager` for immediate loading
    */
   loading?: 'lazy' | 'eager';
+  width?: number;
+  height?: number;
   className?: string;
 }
 
@@ -28,12 +30,14 @@ export const Picture: React.FC<PictureProps> = ({
   src,
   alt,
   srcSet,
+  width,
+  height,
   loading = 'lazy',
   className = '',
   ...props
 }) => {
   return (
-    <picture className={twMerge('', className)} {...props}>
+    <picture className={twMerge('flex py-2 justify-center items-center border border-gray-500 rounded-xl', className)} {...props}>
       {/* If srcSet is provided, use a <source> tag for responsive images */}
       {srcSet && <source srcSet={srcSet} />}
 
@@ -42,7 +46,9 @@ export const Picture: React.FC<PictureProps> = ({
         src={src}
         alt={alt}
         loading={loading}
-        className="w-full h-auto px-12 py-4 border border-gray-500 rounded-xl"
+        {...(width ? { width: width } : {})}
+        {...(height ? { height: height } : {})}
+        className="h-full"
       />
     </picture>
   );
