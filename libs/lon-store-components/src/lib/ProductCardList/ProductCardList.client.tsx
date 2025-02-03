@@ -11,6 +11,7 @@ export const ProductCardList: React.FC<ProductCardListProps> = ({
   products,
   initialLoad = 6,
   loadMore = 6,
+  onAddToCart,
 }) => {
   const [displayedProducts, setDisplayedProducts] = useState(
     products.slice(0, initialLoad)
@@ -57,10 +58,14 @@ export const ProductCardList: React.FC<ProductCardListProps> = ({
           <ProductCard
             key={product.id}
             variant="regular"
+            productId={product.id}
             imageSrc={product.imageSrc}
             title={product.title}
             price={product.price}
             rating={product.rating}
+            onAddToCart={() => {
+              onAddToCart?.(product.id || '');
+            }}
           />
         ))}
       </div>

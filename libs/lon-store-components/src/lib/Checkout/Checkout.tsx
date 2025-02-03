@@ -1,8 +1,7 @@
-"use client"
+'use client';
 
-import React, { useState } from 'react';
-import { Dialog } from '../Dialog/Dialog';
-import { TextField } from '../TextField/TextField';
+import React, { useState, useEffect, useRef } from 'react';
+import { TextField, TextFieldRef } from '../TextField/TextField';
 import { Cart } from '../Cart/Cart';
 import { Button } from '../Button/Button';
 
@@ -34,25 +33,24 @@ export interface CheckoutFormData {
  * Props for the Checkout component.
  */
 export interface CheckoutProps {
+  formData?: CheckoutFormData;
   cartItems: CartItem[];
   onUpdateQuantity: (id: string, quantity: number) => void;
   onRemoveProduct: (id: string) => void;
-  onCheckout: (formData: CheckoutFormData) => void;
-  nextBtnTxt?: string;
+  onCheckout: (form: CheckoutFormData) => void;
 }
 
 /**
- * `Checkout` component that displays a checkout form inside a dialog.
+ * `Checkout` component that displays a checkout form.
  */
 export const Checkout: React.FC<CheckoutProps> = ({
+  formData,
   cartItems,
   onUpdateQuantity,
   onRemoveProduct,
   onCheckout,
-  nextBtnTxt = 'Confirm Order',
 }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [formData, setFormData] = useState<CheckoutFormData>({
+  const [form, setForm] = useState<CheckoutFormData>({
     email: '',
     name: '',
     address: '',
@@ -61,127 +59,139 @@ export const Checkout: React.FC<CheckoutProps> = ({
     expiry: '',
     cvc: '',
   });
-
-  const handleChange = (field: keyof CheckoutFormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  // Use the correct ref type `TextFieldRef`
+  const fieldRefs = {
+    email: useRef<TextFieldRef>(null),
+    name: useRef<TextFieldRef>(null),
+    address: useRef<TextFieldRef>(null),
+    cardNumber: useRef<TextFieldRef>(null),
+    cardName: useRef<TextFieldRef>(null),
+    expiry: useRef<TextFieldRef>(null),
+    cvc: useRef<TextFieldRef>(null),
   };
 
-  const handleSubmit = () => {
-    const { email, name, address, cardNumber, expiry, cvc } = formData;
-    if (!email || !name || !address || !cardNumber || !expiry || !cvc) {
-      alert('Please fill in all fields.');
+  useEffect(() => {
+    if (formData) {
+      setForm(formData);
+    }
+  }, [formData]);
+
+  const handleChange = (field: keyof CheckoutFormData, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Trigger `onBlur` on all fields to enforce validation
+    Object.values(fieldRefs).forEach((ref) => ref.current?.triggerBlur());
+
+    // Get all validation error messages
+    const errors = Object.keys(fieldRefs).reduce((acc, key) => {
+      const errorMsg =
+        fieldRefs[key as keyof typeof fieldRefs]?.current?.getError() || '';
+      return { ...acc, [key]: errorMsg };
+    }, {} as Record<string, string>);
+
+    // Check if any field has an error
+    const hasError = Object.values(errors).some((error) => error !== '');
+    if (hasError) {
+      alert('Please fill in all required fields correctly.');
       return;
     }
-    onCheckout(formData);
-    setIsOpen(false);
+
+    onCheckout(form);
   };
 
   return (
-    <>
-      {/* Open Checkout Button */}
-      <Button
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-        onClick={() => setIsOpen(true)}
-      >
-        Proceed to Checkout
-      </Button>
-
-      {/* Checkout Dialog */}
-      <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)} title="Checkout">
-        <div className="flex flex-col gap-6">
-          {/* Shipping Information */}
-          <div className="border-b border-b-gray-200 pb-6">
-            <h2 className="text-base font-medium text-black mb-2">
-              Shipping Information
-            </h2>
-            <div className="grid grid-cols-1 gap-4">
-              <TextField
-                label="Email"
-                fieldType="email"
-                isRequired
-                value={formData.email}
-                onChange={(e) =>
-                  handleChange('email', e.target.value.toString())
-                }
-              />
-              <TextField
-                label="Name"
-                fieldType="text"
-                isRequired
-                value={formData.name}
-                onChange={(e) =>
-                  handleChange('name', e.target.value.toString())
-                }
-              />
-              <TextField
-                label="Address"
-                fieldType="text"
-                isRequired
-                className="sm:col-span-2"
-                value={formData.address}
-                onChange={(e) =>
-                  handleChange('address', e.target.value.toString())
-                }
-              />
-            </div>
-          </div>
-
-          {/* Payment Section */}
-          <div className="border-b border-b-gray-200 pb-6">
-            <h2 className="text-base font-medium text-black mb-2">Payment</h2>
-            <div className="grid grid-cols-1 gap-4">
-              <TextField
-                label="Card Number"
-                fieldType="bankCard"
-                isRequired
-                value={formData.cardNumber}
-                onChange={(e) =>
-                  handleChange('cardNumber', e.target.value.toString())
-                }
-              />
-              <TextField
-                label="Card Name"
-                fieldType="bankCard"
-                isRequired
-                value={formData.cardName}
-                onChange={(e) =>
-                  handleChange('cardName', e.target.value.toString())
-                }
-              />
-            </div>
-            {/* Expiry & CVC on same row for small screens */}
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <TextField
-                label="Expiry (MM/YY)"
-                fieldType="bankCardExpiry"
-                isRequired
-                value={formData.expiry}
-                onChange={(e) =>
-                  handleChange('expiry', e.target.value.toString())
-                }
-              />
-              <TextField
-                label="CVC"
-                fieldType="cvc"
-                isRequired
-                value={formData.cvc}
-                onChange={(e) => handleChange('cvc', e.target.value.toString())}
-              />
-            </div>
-          </div>
-
-          {/* Cart Items */}
-          <Cart
-            showSummary={true}
-            cartItems={cartItems}
-            onUpdateQuantity={onUpdateQuantity}
-            onRemoveProduct={onRemoveProduct}
-            onNextClick={handleSubmit}
-            nextBtnTxt={nextBtnTxt}
+    <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+      {/* Shipping Information */}
+      <div className="border-b border-b-gray-200 pb-6">
+        <h2 className="text-base font-medium text-black mb-2">
+          Shipping Information
+        </h2>
+        <div className="grid grid-cols-1 gap-4">
+          <TextField
+            ref={fieldRefs.email}
+            label="Email"
+            fieldType="email"
+            isRequired
+            value={form.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+          />
+          <TextField
+            ref={fieldRefs.name}
+            label="Name"
+            fieldType="text"
+            isRequired
+            value={form.name}
+            onChange={(e) => handleChange('name', e.target.value)}
+          />
+          <TextField
+            ref={fieldRefs.address}
+            label="Address"
+            fieldType="text"
+            isRequired
+            className="sm:col-span-2"
+            value={form.address}
+            onChange={(e) => handleChange('address', e.target.value)}
           />
         </div>
-      </Dialog>
-    </>
+      </div>
+
+      {/* Payment Section */}
+      <div className="border-b border-b-gray-200 pb-6">
+        <h2 className="text-base font-medium text-black mb-2">Payment</h2>
+        <div className="grid grid-cols-1 gap-4">
+          <TextField
+            ref={fieldRefs.cardNumber}
+            label="Card Number"
+            fieldType="bankCard"
+            isRequired
+            value={form.cardNumber}
+            onChange={(e) => handleChange('cardNumber', e.target.value)}
+          />
+          <TextField
+            ref={fieldRefs.cardName}
+            label="Card Name"
+            fieldType="text"
+            isRequired
+            value={form.cardName}
+            onChange={(e) => handleChange('cardName', e.target.value)}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <TextField
+            ref={fieldRefs.expiry}
+            label="Expiry (MM/YY)"
+            fieldType="bankCardExpiry"
+            isRequired
+            value={form.expiry}
+            onChange={(e) => handleChange('expiry', e.target.value)}
+          />
+          <TextField
+            ref={fieldRefs.cvc}
+            label="CVC"
+            fieldType="cvc"
+            isRequired
+            value={form.cvc}
+            onChange={(e) => handleChange('cvc', e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Cart Items */}
+      <Cart
+        showSummary
+        cartItems={cartItems}
+        onUpdateQuantity={onUpdateQuantity}
+        onRemoveProduct={onRemoveProduct}
+        showNextBtn={false}
+      />
+      <Button variant="green" type="submit">
+        Confirm Order
+      </Button>
+    </form>
   );
 };
 

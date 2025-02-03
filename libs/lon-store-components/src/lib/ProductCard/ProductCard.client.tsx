@@ -12,6 +12,7 @@ import type { ProductCardProps } from './ProductCard.types';
  * `ProductCard` component to display product information.
  */
 export const ProductCard: React.FC<ProductCardProps> = ({
+  productId,
   variant,
   imageSrc,
   title,
@@ -62,7 +63,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Add to Cart Button */}
-          <Button className="w-full" variant="blue" onClick={onAddToCart}>
+          <Button
+            className="w-full"
+            variant="blue"
+            onClick={() => {
+              onAddToCart?.(productId || '');
+            }}
+          >
             Add to Cart
           </Button>
         </>

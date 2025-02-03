@@ -1,12 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import { useCart } from '../../hook/cartContext';
-import { Cart, CartProps, Dialog } from '@lon-store-nx/lon-store-components';
+import {
+  Cart,
+  CartProps,
+  Checkout,
+  CheckoutFormData,
+  Dialog,
+} from '@lon-store-nx/lon-store-components';
 
 export const CartDialog: React.FC = () => {
   const { cart, isCartOpen, closeCart, updateCart } = useCart();
-
-  console.log(cart);
+  const [step, setStep] = useState<'cart' | 'checkout' | 'succeed'>('cart');
 
   const cartItems: CartProps['cartItems'] = (cart?.products ?? []).map(
     (product) => {
@@ -20,9 +26,7 @@ export const CartDialog: React.FC = () => {
     }
   );
 
-  /**
-   * Update item quantity.
-   */
+  // Update item quantity.
   const handleUpdateQuantity = (productId: string, quantity: number) => {
     if (!cart?.id) {
       console.error('Cart ID is missing, cannot update product quantity.');
@@ -60,9 +64,7 @@ export const CartDialog: React.FC = () => {
     });
   };
 
-  /**
-   * Remove an item from the cart.
-   */
+  // Remove an item from the cart.
   const handleRemoveProduct = (productId: string) => {
     if (!cart?.id) {
       console.error('Cart ID is missing, cannot remove product.');
@@ -91,14 +93,46 @@ export const CartDialog: React.FC = () => {
     });
   };
 
+  const dialogTitle = {
+    cart: 'Cart',
+    checkout: 'Checkout',
+    succeed: 'Order Confirmation',
+  };
+
+  // 'cart' | 'checkout' | 'succeed' use same Dialog fill diff content
   return (
-    <Dialog isOpen={isCartOpen} onClose={closeCart} position="top" title="Cart">
-      <Cart
-        cartItems={cartItems}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveProduct={handleRemoveProduct}
-        onNextClick={() => console.log('Proceeding to checkout...')}
-      />
+    <Dialog
+      variant={step === 'succeed' ? 'confirm' : 'blank'}
+      confirmText={step === 'succeed' ? 'Thank you for your order!' : ''}
+      onConfirm={() => {
+        closeCart();
+        setStep('cart');
+      }}
+      isOpen={isCartOpen}
+      onClose={closeCart}
+      position="top"
+      title={dialogTitle[step]}
+    >
+      {step === 'cart' && (
+        <Cart
+          cartItems={cartItems}
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveProduct={handleRemoveProduct}
+          onNextClick={() => {
+            setStep('checkout');
+          }}
+        />
+      )}
+      {step === 'checkout' && (
+        <Checkout
+          cartItems={cartItems}
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveProduct={handleRemoveProduct}
+          onCheckout={(formData: CheckoutFormData) => {
+            setStep('succeed');
+          }}
+        />
+      )}
     </Dialog>
   );
 };
