@@ -37,6 +37,10 @@ export async function startServer(port = 4000): Promise<http.Server> {
 
   await server.start();
 
+  app.get('/health', (req, res) => {
+    res.status(200).send('OK');  // Health check response
+  });  
+
   // Apply Express middleware for GraphQL
   app.use(
     '/graphql',
