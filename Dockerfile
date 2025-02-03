@@ -42,4 +42,4 @@ COPY --from=builder /app/node_modules /app/node_modules
 
 EXPOSE 3000 4000 6006
 
-CMD ["tini", "--", "sh", "-c", "pnpm next start ./apps/lon-store/ -p 3000 &  PORT=4000 node /app/api/main.js  & pnpm serve dist/storybook/lon-store-components -l 6006"]
+CMD ["tini", "--", "sh", "-c", "pnpm next start ./apps/lon-store/ -p 3000 &  PORT=4000 node /app/api/main.js  & pnpm serve /app/storybook -l 6006"]
