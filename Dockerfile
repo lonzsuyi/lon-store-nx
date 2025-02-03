@@ -12,11 +12,11 @@ RUN pnpm install --filter lon-store-components --frozen-lockfile
 
 COPY . .
 
-# RUN pnpm nx build lon-store --prod 
-# # # Build Express API (outputs to dist/apps/lon-store-middleware)
-# RUN pnpm nx build lon-store-middleware --prod 
-# # # Build Storybook (outputs to dist/libs/lon-store-components)
-# RUN pnpm nx run lon-store-components:build-storybook 
+RUN pnpm nx build lon-store --prod 
+# # Build Express API (outputs to dist/apps/lon-store-middleware)
+RUN pnpm nx build lon-store-middleware --prod 
+# # Build Storybook (outputs to dist/libs/lon-store-components)
+RUN pnpm nx run lon-store-components:build-storybook 
 
 # # # ----------- FINAL RUNTIME IMAGE -------------
 # FROM node:23.1-alpine AS runner
@@ -34,11 +34,11 @@ COPY . .
 
 
 # COPY --from=builder /app/apps/lon-store /app/apps/lon-store
-# COPY --from=builder /app/dist/apps/lon-store-middleware /app/api
-# COPY --from=builder /app/dist/libs/lon-store-components /app/storybook
+# COPY --from=builder /app/dist/apps/lon-store-middleware /app/api/lon-store-middleware
+# COPY --from=builder /app/dist/libs/lon-store-components /app/libs/lon-store-components
 # COPY --from=builder /app/package.json /app/
 # COPY --from=builder /app/node_modules /app/node_modules
 
 # EXPOSE 3000 4000 6006
 
-# CMD ["tini", "--", "sh", "-c", "pnpm next start ./apps/lon-store/ -p 3000 &  PORT=4000 node /app/api/main.js  & pnpm serve /app/storybook -l 6006"]
+# CMD ["tini", "--", "sh", "-c", "pnpm next start /app/apps/lon-store/.next -p 3000 & PORT=4000 node /app/api/lon-store-middleware/main.js & pnpm serve /app/libs/lon-store-components -l 6006"]
