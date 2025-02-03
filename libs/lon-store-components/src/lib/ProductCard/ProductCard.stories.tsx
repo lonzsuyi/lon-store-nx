@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent } from '@storybook/testing-library';
 import { expect } from '@storybook/jest';
-import { ProductCard } from './ProductCard';
+import { ProductCard } from './ProductCard.client';
 
 /**
  * Storybook metadata for the ProductCard component.

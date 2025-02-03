@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { within, userEvent, waitFor } from '@storybook/testing-library';
 import { expect } from '@storybook/jest';
-import { Rate } from './Rate';
+import { Rate } from './Rate.client';
 
 const meta: Meta<typeof Rate> = {
   title: 'Components/Rate', // Display name in Storybook
@@ -66,7 +66,7 @@ export const Interactive: Story = {
 
     // Wait for the rating to update
     await waitFor(() => {
-      expect(fifthStar).toHaveAttribute('stroke', '#FABE3A'); // Should be filled (yellow)
+      expect(fifthStar).toHaveAttribute('fill', '#FABE3A'); // Should be filled (yellow)
     });
   },
 };
@@ -84,15 +84,3 @@ export const LargeStars: Story = {
     inactiveColor: '#9CA3AF', // Tailwind gray-400
   },
 };
-
-// export const Primary = {
-//   args: {},
-// };
-
-// export const Heading: Story = {
-//   args: {},
-//   play: async ({ canvasElement }) => {
-//     const canvas = within(canvasElement);
-//     expect(canvas.getByText(/Welcome to Rate!/gi)).toBeTruthy();
-//   },
-// };
