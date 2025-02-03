@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Icon } from '../Icon/Icon';
@@ -17,6 +19,7 @@ export interface DialogProps {
   confirmText?: string; // Custom text for the confirm content.
   confirmBtnText?: string; // Custom text for the confirm button.
   onConfirm?: () => void; // Callback when confirm button is clicked.
+  className?: string;
 }
 
 /**
@@ -33,6 +36,7 @@ export const Dialog: React.FC<DialogProps> = ({
   confirmText = '',
   confirmBtnText = 'Close',
   onConfirm,
+  className,
 }) => {
   useEffect(() => {
     if (!isOpen) return;
@@ -57,7 +61,7 @@ export const Dialog: React.FC<DialogProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center overflow-y-auto"
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center overflow-y-auto mt-[65px]"
       role="dialog"
       aria-modal="true"
     >

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ProductCardList } from './ProductCardList';
+import { ProductCardList } from './ProductCardList.client';
 
 /**
  * Storybook metadata for the ProductCardList component.

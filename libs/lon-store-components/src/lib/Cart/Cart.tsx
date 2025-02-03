@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { ProductCard } from '../ProductCard/ProductCard';
+import { ProductCard } from '../ProductCard/ProductCard.client';
 import { Button } from '../Button/Button';
 
 /**
@@ -16,8 +18,11 @@ export interface CartProps {
   }[];
   onUpdateQuantity: (id: string, quantity: number) => void; // Function to update product quantity.
   onRemoveProduct: (id: string) => void; // Function to remove a product.
-  nextBtnTxt?: string; //
-  onNextClick: () => void; // Function to Next button click.
+  showNextBtn?: boolean;
+  nextBtnTxt?: string;
+  onNextClick?: () => void; // Function to Next button click.
+  showSummary?: boolean;
+  currency?: string;
 }
 
 /**
@@ -27,9 +32,25 @@ export const Cart: React.FC<CartProps> = ({
   cartItems,
   onUpdateQuantity,
   onRemoveProduct,
+  showNextBtn = true,
   nextBtnTxt = 'Checkout',
   onNextClick,
+  showSummary = false,
+  currency = 'AUD',
 }) => {
+  const price_formatted = new Intl.NumberFormat('en-AU', {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  /** Calculate summary price of cart */
+  const summaryPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
   return (
     <div className="flex flex-col gap-4">
       {cartItems.length > 0 ? (
@@ -37,6 +58,7 @@ export const Cart: React.FC<CartProps> = ({
           <ProductCard
             key={item.id}
             variant="mini"
+            productId={item.id}
             imageSrc={item.imageSrc}
             title={item.title}
             price={item.price}
@@ -49,9 +71,20 @@ export const Cart: React.FC<CartProps> = ({
         <p className="text-center text-gray-600">Your cart is empty.</p>
       )}
 
+      {showSummary && (
+        <div className="text-center text-lg text-black">
+          Order Summary: {price_formatted.format(summaryPrice)}
+        </div>
+      )}
+
       {/* Checkout Button */}
-      {cartItems.length > 0 && (
-        <Button variant="green" onClick={onNextClick}>
+      {cartItems.length > 0 && showNextBtn && (
+        <Button
+          variant="green"
+          onClick={() => {
+            onNextClick && onNextClick();
+          }}
+        >
           {nextBtnTxt}
         </Button>
       )}

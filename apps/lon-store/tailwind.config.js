@@ -12,6 +12,9 @@ module.exports = {
     ),
     ...createGlobPatternsForDependencies(__dirname),
   ],
+  safelist: [
+    { pattern: /--header-h/ },
+  ],
   theme: {
     extend: {},
   },
