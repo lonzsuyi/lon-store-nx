@@ -1,2 +1,5 @@
 .pnpm-store/*
-# *.next/*
+*.next/*
+*node_modules/*
+dist/*
+*storybook-static/*

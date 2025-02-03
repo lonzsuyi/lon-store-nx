@@ -45,6 +45,10 @@ pnpm install --filter lon-store-middleware-e2e
   ```sh
   pnpm nx run lon-store:build & pnpm nx run lon-store:start
   ```
+    <img src="./screenshots/lon-store-home.jpg" width="50%"/>
+    <img src="./screenshots/lon-store-cart.jpg" width="50%"/>
+    <img src="./screenshots/lon-checkout.jpg" width="50%"/>
+    <img src="./screenshots/lon-store-thankyou.jpg" width="50%"/>
 
 ### lon-store-e2e
 
@@ -54,6 +58,8 @@ pnpm install --filter lon-store-middleware-e2e
   pnpm nx run lon-store-e2e:open-cypress
   ```
 
+   <img src="./screenshots/lon-store-e2e.jpg" width="50%"/>
+
 ### lon-store-components
 
 - **Run Storybook**
@@ -61,6 +67,7 @@ pnpm install --filter lon-store-middleware-e2e
   ```sh
   pnpm nx run lon-store-components:storybook
   ```
+  <img src="./screenshots/lon-store-components-ut.jgp" width="50%"/>
 
 ### lon-store-middleware
 
@@ -69,7 +76,6 @@ pnpm install --filter lon-store-middleware-e2e
   ```sh
   pnpm nx run lon-store-middleware:serve
   ```
-
 ### lon-store-middleware-e2e
 
 - **Run E2E Tests**
@@ -77,6 +83,7 @@ pnpm install --filter lon-store-middleware-e2e
   ```sh
   pnpm nx run lon-store-middleware-e2e:e2e
   ```
+  <img src="./screenshots/lon-middleware-e2e.jpg" width="50%"/>
 
 # Deployment
 
@@ -86,6 +93,9 @@ pnpm install --filter lon-store-middleware-e2e
   docker run -p 3000:3000 -p 4000:4000 -p 6006:6006 --name lon-store-instance lon-store-image:latest
   ```
   note:Expose ports 3000:lon-store 4000:lon-store-middleware 6006:lon-store-components
+
+  <img src="./screenshots/docker-build.jpg" width="50%"/>
+
 # Outstanding Issues
 
 1. The exact same icon as the shopping cart design could not be found, so a different icon was used as a replacement.
