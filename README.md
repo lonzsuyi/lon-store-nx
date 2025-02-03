@@ -80,8 +80,12 @@ pnpm install --filter lon-store-middleware-e2e
 
 # Deployment
 
-(TBD)
-
+**Run In Docker**
+```sh
+  docker build -t lon-store-image .
+  docker run -p 3000:3000 -p 4000:4000 -p 6006:6006 --name lon-store-instance lon-store-image:latest
+  ```
+  note:Expose ports 3000:lon-store 4000:lon-store-middleware 6006:lon-store-components
 # Outstanding Issues
 
 1. The exact same icon as the shopping cart design could not be found, so a different icon was used as a replacement.

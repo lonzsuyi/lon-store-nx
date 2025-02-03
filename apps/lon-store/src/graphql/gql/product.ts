@@ -20,6 +20,26 @@ export const GET_PRODUCTS = gql`
     }
   }
 `;
+/**
+ * GraphQL query to fetch all available products.
+ * It retrieves product details including ID, title, price, description, category, image, and rating.
+ */
+export const GET_PRODUCTS_STRING = `
+  query GetProducts {
+    products {
+      id
+      title
+      price
+      description
+      category
+      image
+      rating {
+        rate
+        count
+      }
+    }
+  }
+`;
 
 /**
  * Represents the rating of a product, including the rating score and number of reviews.

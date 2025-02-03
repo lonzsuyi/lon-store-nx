@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache, HttpLink, NormalizedCacheObject } from "@apollo/client";
 
-const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "http://localhost:4000/graphql";
+export const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "http://localhost:4000/graphql";
 
 // Function to create an Apollo Client instance
 export const createApolloClient = () => {
