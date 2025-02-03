@@ -86,6 +86,9 @@ pnpm install --filter lon-store-middleware-e2e
   docker run -p 3000:3000 -p 4000:4000 -p 6006:6006 --name lon-store-instance lon-store-image:latest
   ```
   note:Expose ports 3000:lon-store 4000:lon-store-middleware 6006:lon-store-components
+
+  Expected output: 
+  <img src=".//docs/storybook-6006.png" width="100%"/>
 # Outstanding Issues
 
 1. The exact same icon as the shopping cart design could not be found, so a different icon was used as a replacement.
