@@ -30,6 +30,7 @@ export const typeDefs = `
   type CartItem {
     productId: ID!
     quantity: Int!
+    product: Product
   }
 
   type User {
@@ -69,6 +70,14 @@ export const typeDefs = `
 
   type Mutation {
     login(username: String!, password: String!): AuthResponse
+    updateCart(id: ID!, userId: ID!, date: String!, products: [CartItemInput]!): Cart
+    partialUpdateCart(id: ID!, userId: ID, date: String, products: [CartItemInput]): Cart
+    deleteCart(id: ID!): Cart
+  }
+
+  input CartItemInput {
+    productId: ID!
+    quantity: Int!
   }
 `;
 
@@ -90,7 +99,12 @@ interface Cart {
   id: number;
   userId: number;
   date: string;
-  products: { productId: number; quantity: number }[];
+  products: { productId: number; quantity: number; product: Product }[];
+}
+
+export interface CartItem {
+  productId: number;
+  quantity: number;
 }
 
 interface User {
@@ -126,8 +140,9 @@ async function fetchData<T>(url: string): Promise<T> {
 
     const data = await response.json();
 
-    console.log(`API Response from ${url}:`, JSON.stringify(data, null, 2)); // Log response
+    console.log(`API Response from ${url}:`, JSON.stringify(data, null, 2)); // Debugging log
 
+    // Ensure data is a valid object and matches the expected type
     if (!data || typeof data !== 'object') {
       throw new Error(`Invalid response from ${url}`);
     }
@@ -152,7 +167,20 @@ export const resolvers = {
       return await fetchData<Cart[]>(`${API_URL}/carts`);
     },
     cart: async (_: unknown, { id }: { id: string }): Promise<Cart> => {
-      return await fetchData<Cart>(`${API_URL}/carts/${id}`);
+      // Fetch cart data from API
+      const cart = await fetchData<Cart>(`${API_URL}/carts/${id}`);
+
+      // Fetch full product details for each productId in the cart
+      const enrichedProducts = await Promise.all(
+        cart.products.map(async (item) => {
+          const product = await fetchData<Product>(
+            `${API_URL}/products/${item.productId}`
+          );
+          return { ...item, product }; // Add full product details to the item
+        })
+      );
+
+      return { ...cart, products: enrichedProducts };
     },
     users: async (): Promise<User[]> => {
       return await fetchData<User[]>(`${API_URL}/users`);
@@ -180,15 +208,123 @@ export const resolvers = {
 
         const data = (await response.json()) as Partial<LoginResponse>;
 
-        // Ensure the response contains a token
         if (!data.token) {
           throw new Error('Invalid response: Missing token');
         }
 
-        return { token: data.token }; // Ensure LoginResponse format
+        return { token: data.token };
       } catch (error) {
         console.error('Login failed:', error);
         throw new Error('Login failed');
+      }
+    },
+
+    // Update (PUT) an entire cart
+    updateCart: async (
+      _: unknown,
+      {
+        id,
+        userId,
+        date,
+        products,
+      }: { id: string; userId: number; date: string; products: CartItem[] }
+    ): Promise<Cart> => {
+      try {
+        const response = await fetch(`${API_URL}/carts/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, date, products }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to update cart! Status: ${response.status}`);
+        }
+
+        const data = (await response.json()) as Cart; // Explicitly cast as Cart
+
+        if (
+          !data.id ||
+          !data.userId ||
+          !data.date ||
+          !Array.isArray(data.products)
+        ) {
+          throw new Error('Invalid cart response');
+        }
+
+        return data;
+      } catch (error) {
+        console.error('Update Cart Failed:', error);
+        throw new Error('Failed to update cart');
+      }
+    },
+
+    // Partially Update (PATCH) a cart
+    partialUpdateCart: async (
+      _: unknown,
+      {
+        id,
+        userId,
+        date,
+        products,
+      }: { id: string; userId?: number; date?: string; products?: CartItem[] }
+    ): Promise<Cart> => {
+      try {
+        const response = await fetch(`${API_URL}/carts/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, date, products }),
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to partially update cart! Status: ${response.status}`
+          );
+        }
+
+        const data = (await response.json()) as Cart; // Explicitly cast as Cart
+
+        if (
+          !data.id ||
+          !data.userId ||
+          !data.date ||
+          !Array.isArray(data.products)
+        ) {
+          throw new Error('Invalid cart response');
+        }
+
+        return data;
+      } catch (error) {
+        console.error('Partial Update Cart Failed:', error);
+        throw new Error('Failed to partially update cart');
+      }
+    },
+
+    // Delete a cart
+    deleteCart: async (_: unknown, { id }: { id: string }): Promise<Cart> => {
+      try {
+        const response = await fetch(`${API_URL}/carts/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to delete cart! Status: ${response.status}`);
+        }
+
+        const data = (await response.json()) as Cart; // Explicitly cast as Cart
+
+        if (
+          !data.id ||
+          !data.userId ||
+          !data.date ||
+          !Array.isArray(data.products)
+        ) {
+          throw new Error('Invalid cart response');
+        }
+
+        return data;
+      } catch (error) {
+        console.error('Delete Cart Failed:', error);
+        throw new Error('Failed to delete cart');
       }
     },
   },

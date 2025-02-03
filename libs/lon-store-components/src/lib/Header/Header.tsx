@@ -1,4 +1,5 @@
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 import { Icon } from '../Icon/Icon';
 
 /**
@@ -6,14 +7,25 @@ import { Icon } from '../Icon/Icon';
  */
 export interface HeaderProps {
   cartCount?: number; // Number of items in the shopping cart.
+  onCartBtnClick?: () => void;
+  className?: string;
 }
 
 /**
  * `Header` component with a left icon, a right shopping cart icon, and a dynamic cart count.
  */
-export const Header: React.FC<HeaderProps> = ({ cartCount = 0 }) => {
+export const Header: React.FC<HeaderProps> = ({
+  cartCount = 0,
+  onCartBtnClick,
+  className,
+}) => {
   return (
-    <header className="w-full h-[65px] flex justify-between items-center px-4  shadow-md">
+    <header
+      className={twMerge(
+        'w-full h-[65px] flex justify-between items-center px-4  shadow-md bg-white',
+        className
+      )}
+    >
       {/* Left Icon */}
       <Icon
         name="Zap"
@@ -25,14 +37,18 @@ export const Header: React.FC<HeaderProps> = ({ cartCount = 0 }) => {
       />
 
       {/* Shopping Cart + Count */}
-      <div className="relative flex items-center">
-        <Icon
-          name="ShoppingBasket"
-          size={24}
-          className="text-gray-150"
-          data-testid="shopping-cart"
-        />
-        <span className="ml-1 text-gray-150 text-sm font-medium">X {cartCount}</span>
+      <div className="">
+        <button className="relative flex items-center" onClick={onCartBtnClick}>
+          <Icon
+            name="ShoppingBasket"
+            size={24}
+            className="text-gray-150 cursor-pointer"
+            data-testid="shopping-cart"
+          />
+          <span className="ml-1 text-gray-150 text-sm font-medium">
+            X {cartCount}
+          </span>
+        </button>
       </div>
     </header>
   );

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from 'react';
 import { Dialog } from '../Dialog/Dialog';
 import { TextField } from '../TextField/TextField';
@@ -170,6 +172,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
 
           {/* Cart Items */}
           <Cart
+            showSummary={true}
             cartItems={cartItems}
             onUpdateQuantity={onUpdateQuantity}
             onRemoveProduct={onRemoveProduct}
