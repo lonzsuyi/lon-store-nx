@@ -14,14 +14,14 @@ export const createApolloClient = () => {
           try {
             return await fetch(uri, options);
           } catch (error: unknown) {
-            // 进行类型检查并打印错误信息
+            // Type check and log the error
             if (error instanceof Error) {
               console.error("GraphQL API Unavailable:", error.message);
             } else {
               console.error("GraphQL API Unavailable: Unknown error", error);
             }
 
-            // 返回合法的 Response 对象，防止 Apollo Client 崩溃
+            // Return a valid Response object to prevent Apollo Client from crashing
             return new Response(
               JSON.stringify({ errors: [{ message: "GraphQL endpoint unavailable, using fallback data." }] }),
               {
@@ -36,16 +36,17 @@ export const createApolloClient = () => {
       cache: new InMemoryCache(),
     });
   } catch (error: unknown) {
-    // 进行错误类型检查
+    // Type check and log the error
     if (error instanceof Error) {
       console.error("Failed to initialize Apollo Client:", error.message);
     } else {
       console.error("Failed to initialize Apollo Client: Unknown error", error);
     }
 
+    // Return a fallback Apollo Client instance with a harmless dummy link
     return new ApolloClient({
       ssrMode: true,
-      link: new HttpLink({ uri: "about:blank" }), // 设一个无害的空链接，防止构建崩溃
+      link: new HttpLink({ uri: "about:blank" }), // Use an empty link to avoid build failures
       cache: new InMemoryCache(),
     });
   }
