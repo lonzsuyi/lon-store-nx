@@ -1,6 +1,6 @@
 'use client';
 
-import { useCart } from '../../hook/cartContext';
+import { useCart } from '../../hook/CartContext';
 
 import { Header as CustHeader } from '@lon-store-nx/lon-store-components';
 

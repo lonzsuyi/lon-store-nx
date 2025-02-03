@@ -84,6 +84,7 @@ export const Cart: React.FC<CartProps> = ({
           onClick={() => {
             onNextClick && onNextClick();
           }}
+          data-testid="checkout-button"
         >
           {nextBtnTxt}
         </Button>
