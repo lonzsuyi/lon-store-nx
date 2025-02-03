@@ -3,6 +3,7 @@
 *node_modules/*
 dist/*
 *storybook-static/*
+.nx/*
 
 
 # Ignore node_modules (if running `pnpm install` inside Docker)
