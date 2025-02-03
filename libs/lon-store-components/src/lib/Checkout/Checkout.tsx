@@ -104,7 +104,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
   };
 
   return (
-    <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-6" onSubmit={handleSubmit} data-testid="checkout-form">
       {/* Shipping Information */}
       <div className="border-b border-b-gray-200 pb-6">
         <h2 className="text-base font-medium text-black mb-2">
@@ -118,6 +118,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
             isRequired
             value={form.email}
             onChange={(e) => handleChange('email', e.target.value)}
+            data-testid="checkout-email"
           />
           <TextField
             ref={fieldRefs.name}
@@ -126,6 +127,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
             isRequired
             value={form.name}
             onChange={(e) => handleChange('name', e.target.value)}
+            data-testid="checkout-name"
           />
           <TextField
             ref={fieldRefs.address}
@@ -135,6 +137,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
             className="sm:col-span-2"
             value={form.address}
             onChange={(e) => handleChange('address', e.target.value)}
+            data-testid="checkout-address"
           />
         </div>
       </div>
@@ -150,6 +153,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
             isRequired
             value={form.cardNumber}
             onChange={(e) => handleChange('cardNumber', e.target.value)}
+            data-testid="checkout-cardNumber"
           />
           <TextField
             ref={fieldRefs.cardName}
@@ -158,6 +162,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
             isRequired
             value={form.cardName}
             onChange={(e) => handleChange('cardName', e.target.value)}
+            data-testid="checkout-cardName"
           />
         </div>
         <div className="grid grid-cols-2 gap-4 mt-4">
@@ -168,6 +173,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
             isRequired
             value={form.expiry}
             onChange={(e) => handleChange('expiry', e.target.value)}
+            data-testid="checkout-expiry"
           />
           <TextField
             ref={fieldRefs.cvc}
@@ -176,6 +182,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
             isRequired
             value={form.cvc}
             onChange={(e) => handleChange('cvc', e.target.value)}
+            data-testid="checkout-cvc"
           />
         </div>
       </div>
@@ -188,7 +195,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
         onRemoveProduct={onRemoveProduct}
         showNextBtn={false}
       />
-      <Button variant="green" type="submit">
+      <Button variant="green" type="submit" data-testid="confirm-order-button">
         Confirm Order
       </Button>
     </form>
