@@ -10,11 +10,16 @@ interface MyContext {
   token?: string;
 }
 
-async function startServer() {
+/**
+ * Initializes and starts an Express + Apollo Server.
+ * @param port The server port (default: 4000).
+ * @returns Promise<http.Server> Resolves with the running HTTP server.
+ */
+export async function startServer(port = 4000): Promise<http.Server> {
   const app = express();
   const httpServer = http.createServer(app);
 
-  // Apollo Server setup
+  // Initialize Apollo Server with schema and resolvers
   const server = new ApolloServer<MyContext>({
     typeDefs,
     resolvers,
@@ -32,6 +37,7 @@ async function startServer() {
 
   await server.start();
 
+  // Apply Express middleware for GraphQL
   app.use(
     '/graphql',
     cors<cors.CorsRequest>(),
@@ -41,20 +47,28 @@ async function startServer() {
     })
   );
 
-  // Express global error-handling middleware
+  // Global Express error-handling middleware
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error('Express Error:', err.stack || err.message);
     res.status(500).json({ error: 'Internal Server Error', message: err.message });
   });
 
-  await new Promise<void>((resolve) =>
-    httpServer.listen({ port: 4000 }, resolve)
-  );
-
-  console.log(`Server ready at http://localhost:4000/graphql`);
+  // Start HTTP server and return the instance
+  return new Promise<http.Server>((resolve) => {
+    httpServer.listen(port, () => {
+      console.log(`Server ready at http://localhost:${port}/graphql`);
+      resolve(httpServer);
+    });
+  });
 }
 
-// Start server and catch any initialization errors
-startServer().catch((err) => {
-  console.error('Server Startup Error:', err);
-});
+/**
+ * Starts the server only in standalone mode.
+ * Ensures that `startServer()` is only executed when running the file directly,
+ * and not when imported in a test environment.
+ */
+if (require.main === module) {
+  startServer().catch((err) => {
+    console.error('Server Startup Error:', err);
+  });
+}
