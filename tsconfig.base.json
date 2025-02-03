@@ -17,7 +17,8 @@
     "paths": {
       "@lon-store-nx/lon-store-components": [
         "libs/lon-store-components/src/index.ts"
-      ]
+      ],
+      "@lon-store-middleware/*": ["apps/lon-store-middleware/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]
