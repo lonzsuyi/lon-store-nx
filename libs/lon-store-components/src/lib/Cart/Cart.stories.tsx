@@ -43,7 +43,8 @@ const mockCartItems: CartProps['cartItems'] = [
  * Interactive Storybook Cart Component.
  */
 const InteractiveCartWrapper = () => {
-  const [cartItems, setCartItems] = useState<CartProps['cartItems']>(mockCartItems);
+  const [cartItems, setCartItems] =
+    useState<CartProps['cartItems']>(mockCartItems);
   const [isOpen, setIsOpen] = useState(false);
 
   /**
@@ -61,12 +62,18 @@ const InteractiveCartWrapper = () => {
    * Remove an item from the cart.
    */
   const handleRemoveProduct = (id: string) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+    setCartItems((prev) => {
+      const updatedCart = prev.filter((item) => item.id !== id);
+      return [...updatedCart];
+    });
   };
 
   return (
     <>
-      <Button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={() => setIsOpen(true)}>
+      <Button
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+        onClick={() => setIsOpen(true)}
+      >
         Open Cart Dialog
       </Button>
 
@@ -90,7 +97,7 @@ export const InteractiveCartInDialog: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // ✅ Open cart dialog
+    // Open cart dialog
     const openCartButton = canvas.getByText(/Open Cart Dialog/i);
     await userEvent.click(openCartButton);
 

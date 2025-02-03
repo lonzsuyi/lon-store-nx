@@ -122,7 +122,7 @@ export const DELETE_CART = gql`
 export interface CartItem {
   productId: number;
   quantity: number;
-  product: Product;
+  product?: Product;
 }
 
 /**

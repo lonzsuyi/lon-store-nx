@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import React from 'react';
 import { ProductCard } from '../ProductCard/ProductCard.client';
@@ -18,8 +18,9 @@ export interface CartProps {
   }[];
   onUpdateQuantity: (id: string, quantity: number) => void; // Function to update product quantity.
   onRemoveProduct: (id: string) => void; // Function to remove a product.
-  nextBtnTxt?: string; //
-  onNextClick: () => void; // Function to Next button click.
+  showNextBtn?: boolean;
+  nextBtnTxt?: string;
+  onNextClick?: () => void; // Function to Next button click.
   showSummary?: boolean;
   currency?: string;
 }
@@ -31,6 +32,7 @@ export const Cart: React.FC<CartProps> = ({
   cartItems,
   onUpdateQuantity,
   onRemoveProduct,
+  showNextBtn = true,
   nextBtnTxt = 'Checkout',
   onNextClick,
   showSummary = false,
@@ -56,6 +58,7 @@ export const Cart: React.FC<CartProps> = ({
           <ProductCard
             key={item.id}
             variant="mini"
+            productId={item.id}
             imageSrc={item.imageSrc}
             title={item.title}
             price={item.price}
@@ -69,12 +72,19 @@ export const Cart: React.FC<CartProps> = ({
       )}
 
       {showSummary && (
-        <div className="text-center text-lg text-black">Order Summary: {price_formatted.format(summaryPrice)}</div>
+        <div className="text-center text-lg text-black">
+          Order Summary: {price_formatted.format(summaryPrice)}
+        </div>
       )}
 
       {/* Checkout Button */}
-      {cartItems.length > 0 && (
-        <Button variant="green" onClick={onNextClick}>
+      {cartItems.length > 0 && showNextBtn && (
+        <Button
+          variant="green"
+          onClick={() => {
+            onNextClick && onNextClick();
+          }}
+        >
           {nextBtnTxt}
         </Button>
       )}

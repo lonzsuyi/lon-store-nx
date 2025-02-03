@@ -16,6 +16,7 @@ export const ProductCardListServer: React.FC<ProductCardListProps> = ({
           <ProductCard
             key={product.id}
             variant="regular"
+            productId={product.id}
             imageSrc={product.imageSrc}
             title={product.title}
             price={product.price}

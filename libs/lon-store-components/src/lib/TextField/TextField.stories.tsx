@@ -87,6 +87,7 @@ export const RequiredEmail: Story = {
 
     // Enter valid email and check that the error disappears
     await userEvent.type(input, 'test@example.com');
+    await userEvent.tab();
     await waitFor(() => {
       expect(canvas.queryByText('This field is required.')).toBeNull();
     });
@@ -122,7 +123,7 @@ export const RequiredCardNumber: Story = {
     // Clear input and type a valid card number
     await userEvent.clear(input);
     await userEvent.type(input, '1234567812345678');
-
+    await userEvent.tab();
     // Wait for the validation message to disappear
     await waitFor(() => {
       expect(
@@ -156,18 +157,18 @@ export const RequiredExpiry: Story = {
     // Wait for validation message to appear
     await waitFor(() => {
       expect(
-        canvas.getByText('Invalid expiry format (MM/YY or MM/YYYY).')
+        canvas.getByText('Invalid expiry format (MM/YY).')
       ).toBeTruthy();
     });
 
     // Clear input and type a valid expiry date
     await userEvent.clear(input);
     await userEvent.type(input, '12/25');
-
+    await userEvent.tab();
     // Wait for the validation message to disappear
     await waitFor(() => {
       expect(
-        canvas.queryByText('Invalid expiry format (MM/YY or MM/YYYY).')
+        canvas.queryByText('Invalid expiry format (MM/YY).')
       ).toBeNull();
     });
   },
@@ -198,6 +199,7 @@ export const RequiredCVC: Story = {
 
     await userEvent.clear(input);
     await userEvent.type(input, '1234');
+    await userEvent.tab();
     await waitFor(() => {
       expect(canvas.queryByText('Invalid CVC (3-4 digits).')).toBeNull();
     });
@@ -227,6 +229,7 @@ export const RequiredNumber: Story = {
 
     await userEvent.clear(input);
     await userEvent.type(input, '25');
+    await userEvent.tab();
     await waitFor(() => {
       expect(canvas.queryByText('Only numbers are allowed.')).toBeNull();
     });
@@ -254,6 +257,7 @@ export const RequiredEmailValidationTest: Story = {
 
     // Type a valid email and check error disappears
     await userEvent.type(input, 'test@example.com');
+    await userEvent.tab();
     expect(canvas.queryByText('This field is required.')).toBeNull();
   },
 };

@@ -59,6 +59,7 @@ const MiniProductCardStory: React.FC = () => {
   return (
     <ProductCard
       variant="mini"
+      productId="1"
       imageSrc="https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg"
       title="Solid Gold Petite Micropave"
       price={15.0}
