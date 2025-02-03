@@ -11,6 +11,9 @@ importers:
       '@apollo/client':
         specifier: ^3.12.8
         version: 3.12.8(@types/react@19.0.0)(graphql@16.10.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@apollo/server':
+        specifier: ^4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.10.0)
       axios:
         specifier: ^1.6.0
         version: 1.7.9
