@@ -4,11 +4,10 @@ FROM node:23.1-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Install pnpm directly to avoid Corepack issues
 RUN npm install -g pnpm
 
 # Install tini to prevent zombie processes
-RUN apk add --no-cache tini
+# RUN apk add --no-cache tini
 
 # Copy package.json & pnpm-lock.yaml and install dependencies
 COPY package.json pnpm-lock.yaml ./
@@ -19,8 +18,7 @@ COPY . .
 
 RUN pnpm nx reset
 
-# Build Next.js
-RUN pnpm nx build lon-store --prod
+RUN NX_DAEMON=false NX_VERBOSE_LOGGING=true pnpm nx build lon-store --prod
 
 # Build Storybook with Nx Daemon disabled
 RUN NX_DAEMON=false NX_VERBOSE_LOGGING=true pnpm nx run lon-store-components:build-storybook
