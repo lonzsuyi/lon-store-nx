@@ -30,6 +30,7 @@ services:
         condition: service_healthy
     networks:
       - app-network
+    entrypoint: ["/bin/sh", "-c", "./wait-for-it.sh middleware-service 4000"]
 
 networks:
   app-network:
