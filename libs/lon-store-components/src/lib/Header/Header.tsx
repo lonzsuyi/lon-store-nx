@@ -38,7 +38,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Shopping Cart + Count */}
       <div className="">
-        <button className="relative flex items-center" onClick={onCartBtnClick}>
+        <button className="relative flex items-center" data-testid="cart-button" onClick={onCartBtnClick} >
           <Icon
             name="ShoppingBasket"
             size={24}

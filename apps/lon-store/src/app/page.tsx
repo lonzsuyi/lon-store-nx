@@ -29,7 +29,6 @@ export default async function Index() {
 
   // Add product to cart
   const addToCart = async (productId: string) => {
-    console.log('123')
     await client.mutate({
       mutation: UPDATE_CART,
       variables: {

@@ -38,6 +38,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           ? 'min-h-[487px] flex flex-col justify-between'
           : 'h-[123px] flex items-center border-b border-b-gray-200'
       } bg-white`}
+      data-testid="product-card"
     >
       {variant === 'regular' ? (
         // Regular Variant
@@ -50,13 +51,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           />
 
           {/* Title: over 3 line clamp */}
-          <h3 className="mt-2 text-sm font-medium text-gray-400 line-clamp-3">
+          <h3 className="mt-2 text-sm font-medium text-gray-400 line-clamp-3"  data-testid="product-title">
             {title}
           </h3>
 
           {/* Price & Rating */}
           <div className="flex justify-between items-center mt-2 mb-2">
-            <span className="text-lg font-medium text-black">
+            <span  data-testid="product-price" className="text-lg font-medium text-black">
               {price_formatted.format(price)}
             </span>
             <Rate value={rating} size={18} />
@@ -69,6 +70,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             onClick={() => {
               onAddToCart?.(productId || '');
             }}
+            data-testid="add-to-cart"
           >
             Add to Cart
           </Button>
@@ -83,10 +85,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             className="w-[96px] h-[87px] px-2 object-cover rounded-md"
           />
           {/* Right: Product Info */}
-          <div className="h-full flex-1 flex flex-col justify-between pl-2 py-1">
+          <div className="h-full flex-1 flex flex-col justify-between pl-2 py-1" data-testid="cart-item">
             <div className="flex justify-between items-center">
               {/* Title: over 3 line clamp */}
-              <h3 className="text-sm font-medium text-gray-400 line-clamp-3">
+              <h3 className="text-sm font-medium text-gray-400 line-clamp-3" data-testid="cart-item-title">
                 {title}
               </h3>
 
@@ -97,6 +99,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 size={20}
                 aria-label="Remove product"
                 onClick={onRemove}
+                data-testid="remove-cart-item"
               />
             </div>
 
@@ -116,6 +119,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 onChange={(e) =>
                   onQuantityChange?.(parseInt(e.target.value, 10) || 1)
                 }
+                data-testid="cart-item-quantity"
               />
             </div>
           </div>

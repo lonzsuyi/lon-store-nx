@@ -1,5 +1,5 @@
 import ApolloClientProvider from '../graphql/ApolloProvider';
-import { CartProvider } from '../hook/cartContext';
+import { CartProvider } from '../hook/CartContext';
 
 import 'tailwindcss/tailwind.css';
 import './global.css';
