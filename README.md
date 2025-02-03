@@ -1,82 +1,89 @@
-# LonStoreNx
+# Overview
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+This project adopts the **Nx.js Monorepo** structure to enhance code management and build efficiency. It integrates **Storybook** for UI component development, providing a visual component library and automated documentation. Additionally, it utilizes **Next.js App Router** for modern frontend routing, optimizing performance and SEO. Furthermore, **Tailwind CSS** is used for styling, improving development efficiency, reducing CSS redundancy, and offering flexible responsive design capabilities.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+# Runtime Environment
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/next?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+This project uses **Node.js 23.0.1** and consists of four applications and one library:
 
-## Finish your CI setup
+## Applications (apps directory)
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/2EOJY8P7l2)
+- **lon-store**: A Next.js-based frontend application.
+- **lon-store-e2e**: An end-to-end testing application using Cypress.
+- **lon-store-middleware**: A backend service based on Express.
+- **lon-store-middleware-e2e**: A backend testing application using Jest.
 
+## Library (libs directory)
 
-## Run tasks
+- **lon-store-components**: A shared component library using Storybook for UI component development and management.
 
-To run the dev server for your app, use:
+# How to Run
 
-```sh
-npx nx dev lon-store
-```
-
-To create a production bundle:
-
-```sh
-npx nx build lon-store
-```
-
-To see all available targets to run for a project, run:
+## 1. Install Dependencies
 
 ```sh
-npx nx show project lon-store
+pnpm install
+pnpm install --filter lon-store
+pnpm install --filter lon-store-e2e
+pnpm install --filter lon-store-components
+pnpm install --filter lon-store-middleware
+pnpm install --filter lon-store-middleware-e2e
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+## 2. Run
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### lon-store
 
-## Add new projects
+- **Development Mode**
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+  ```sh
+  pnpm nx run lon-store:dev
+  ```
 
-Use the plugin's generator to create new projects.
+- **Deployment Mode**
 
-To generate a new application, use:
+  ```sh
+  pnpm nx run lon-store:build & pnpm nx run lon-store:start
+  ```
 
-```sh
-npx nx g @nx/next:app demo
-```
+### lon-store-e2e
 
-To generate a new library, use:
+- **Run Cypress**
 
-```sh
-npx nx g @nx/react:lib mylib
-```
+  ```sh
+  pnpm nx run lon-store-e2e:open-cypress
+  ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+### lon-store-components
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- **Run Storybook**
 
+  ```sh
+  pnpm nx run lon-store-components:storybook
+  ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### lon-store-middleware
 
-## Install Nx Console
+- **Run API Service**
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+  ```sh
+  pnpm nx run lon-store-middleware:serve
+  ```
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### lon-store-middleware-e2e
 
-## Useful links
+- **Run E2E Tests**
 
-Learn more:
+  ```sh
+  pnpm nx run lon-store-middleware-e2e:e2e
+  ```
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/next?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+# Deployment
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+(TBD)
+
+# Outstanding Issues
+
+1. The exact same icon as the shopping cart design could not be found, so a different icon was used as a replacement.
+2. Currently, mock API updates and deletions are not reflected in the query list, so update effects are not visible.
+3. Multi-environment deployment CI/CD still requires some time to complete.
