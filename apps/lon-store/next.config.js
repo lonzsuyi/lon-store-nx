@@ -8,7 +8,7 @@ const { composePlugins, withNx } = require('@nx/next');
  **/
 const nextConfig = {
   webpack: (config) => {
-    config.cache = false; // 禁用 Webpack 缓存
+    config.cache = false; 
     return config;
   },
   nx: {
