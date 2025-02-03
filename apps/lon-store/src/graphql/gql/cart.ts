@@ -126,6 +126,14 @@ export interface CartItem {
 }
 
 /**
+ * Update Cart product
+ */
+export interface CartItemInput {
+  productId: number;
+  quantity: number;
+}
+
+/**
  * Represents a shopping cart, including the user ID, date, and the list of cart items.
  */
 export interface Cart {
@@ -156,7 +164,7 @@ export interface UpdateCartInput {
   id: string;
   userId: number;
   date: string;
-  products: CartItem[];
+  products: CartItemInput[];
 }
 
 /**

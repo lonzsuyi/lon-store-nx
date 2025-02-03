@@ -1,17 +1,3 @@
-// import { getGreeting } from '../support/app.po';
-
-// describe('lon-store-e2e', () => {
-//   beforeEach(() => cy.visit('/'));
-
-//   // it('should display welcome message', () => {
-//   //   // Custom command example, see `../support/commands.ts` file
-//   //   cy.login('my-email@something.com', 'myPassword');
-
-//   //   // Function helper example, see `../support/app.po.ts` file
-//   //   getGreeting().contains(/Welcome/);
-//   // });
-// });
-
 describe('Home page', () => {
   beforeEach(() => {
     cy.visit('/');
@@ -62,14 +48,14 @@ describe('Home page', () => {
       cy.get('[data-testid="product-card"]').should('exist'); // More flexible assertion
     });
 
-    // it('should add a product to the cart', () => {
-    //   cy.intercept('POST', '/graphql', { alias: 'updateCart' });
+    it('should add a product to the cart', () => {
+      cy.intercept('POST', '/graphql', { alias: 'updateCart' });
 
-    //   cy.get('[data-testid="add-to-cart"]').click();
-    //   cy.wait('@updateCart');
+      cy.get('[data-testid="add-to-cart"]').click();
+      cy.wait('@updateCart');
 
-    //   cy.get('[data-testid="cart-item"]').should('have.length.at.least', 1);
-    // });
+      cy.get('[data-testid="cart-item"]').should('have.length.at.least', 1);
+    });
   });
 
   describe('Shopping Cart Functionality', () => {
