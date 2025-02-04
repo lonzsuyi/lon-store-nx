@@ -67,7 +67,7 @@ pnpm install --filter lon-store-middleware-e2e
   ```sh
   pnpm nx run lon-store-components:storybook
   ```
-  <img src="./screenshots/lon-store-components-ut.jgp" width="50%"/>
+  <img src="./screenshots/lon-store-components-ut.jpg" width="50%"/>
 
 ### lon-store-middleware
 
